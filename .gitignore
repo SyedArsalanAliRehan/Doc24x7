@@ -1,0 +1,12 @@
+# Node
+node_modules/
+.env
+*.log
+pm2.log
+
+# OS
+.DS_Store
+
+# Vite / React
+frontend/dist
+frontend/node_modules
