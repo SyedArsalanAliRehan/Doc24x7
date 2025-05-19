@@ -1,43 +1,49 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
-  const [form, setForm] = useState({ username: '', password: '' });
-  const [msg, setMsg] = useState('');
+  const [form, setForm] = useState({ email: '', password: '' });
+  const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://13.126.224.178:3000/login', form);
-      localStorage.setItem('token', res.data.token);
-      setMsg('Login successful ✅');
+      const res = await axios.post('http://13.232.235.112:3000/login', form);
+      alert('Login successful!');
+      localStorage.setItem('username', res.data.name);
+      navigate('/home');
     } catch (err) {
-      setMsg(err.response?.data?.message || 'Login failed');
+      alert('Login failed');
+      console.error(err);
     }
   };
 
   return (
-    <form onSubmit={handleLogin} className="space-y-4">
+    <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-20 space-y-4">
+      <h2 className="text-xl font-bold">Login</h2>
       <input
-        type="text"
-        placeholder="Username"
+        name="email"
+        placeholder="Email"
+        onChange={handleChange}
         className="border p-2 w-full"
-        value={form.username}
-        onChange={(e) => setForm({ ...form, username: e.target.value })}
         required
       />
       <input
+        name="password"
         type="password"
         placeholder="Password"
+        onChange={handleChange}
         className="border p-2 w-full"
-        value={form.password}
-        onChange={(e) => setForm({ ...form, password: e.target.value })}
         required
       />
-      <button type="submit" className="bg-green-600 text-white px-4 py-2 w-full">
+      <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">
         Login
       </button>
-      {msg && <p className="text-sm mt-2 text-blue-600">{msg}</p>}
     </form>
   );
 }
